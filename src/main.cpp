@@ -35,6 +35,7 @@
 // Adaptation F4LAA : 
 //    Arduino_RPiPicoPAR8.h, .c :
 //     Ajout de la méthode int32_t Arduino_RPiPicoPAR8::digitalPinToBitMask(int32_t pin) 
+//     #define digitalPinToBitMask(pin)    (1UL << (pin))
 //
 //   Adaptation Arduino_GFX.h, .c :
 //     Ajout classe Arduino_GFX_Button (repris de Elegoo_GFX_Button)
@@ -322,6 +323,32 @@ void setVHFOn(bool on)
     digitalWrite(RelaiVHF, LOW);
 }
 
+void setAlimPAOn(bool on)
+{
+  if (on)
+    digitalWrite(RelaiAlimPA, HIGH);
+  else
+    digitalWrite(RelaiAlimPA, LOW);
+}
+
+bool pttOut = false;
+void setPttOut(bool on)
+{
+  if (on)
+    digitalWrite(PttOut, HIGH);
+  else
+    digitalWrite(PttOut, LOW);
+  pttOut = on;
+}
+
+void setPAOn(bool on)
+{
+  if (on)
+    digitalWrite(RelaiPA, HIGH);
+  else
+    digitalWrite(RelaiPA, LOW);
+}
+
 void manageRun(TSPoint p)
 {
   // now we can ask the buttons if their state has changed
@@ -590,38 +617,12 @@ void barGraph(int16_t val)
     tft->fillRect(TEXT_X + 1, TEXT_Y + 1, val, 18, GREEN);
 }
 
-bool pttOut = false;
-void setPttOut(bool on)
-{
-  if (on)
-    digitalWrite(PttOut, HIGH);
-  else
-    digitalWrite(PttOut, LOW);
-  pttOut = on;
-}
-
-void setAlimPAOn(bool on)
-{
-  if (on)
-    digitalWrite(RelaiAlimPA, HIGH);
-  else
-    digitalWrite(RelaiAlimPA, LOW);
-}
-
-void setPAOn(bool on)
-{
-  if (on)
-    digitalWrite(RelaiPA, HIGH);
-  else
-    digitalWrite(RelaiPA, LOW);
-}
-
 // Gestion du TX
 bool pttActif = false;
 // Mis à jour par le 2ème coeur
 bool nouv_frequence_dispo = true;                               // Fanion d'avertissement qu'une nouvelle fréquence est disponible.
 unsigned int frequence;                                         // Fréquence du transceiver, exprimée en MHz et arrondie
-int old_frequence = -1;                                         // Fréquence préalable du transceiver
+unsigned int old_frequence = 1;                                 // Fréquence préalable du transceiver
 
 // 50ms de pause pour l'activation / l'arrêt des relais
 #define WAITRELAY 50
